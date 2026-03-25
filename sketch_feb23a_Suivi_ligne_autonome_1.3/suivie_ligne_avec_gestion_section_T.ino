@@ -1,29 +1,29 @@
-#define IR_SENSOR_RIGHT 12
-#define IR_SENSOR_LEFT 11
+#define IR_SENSOR_RIGHT 12 //pin du capteur droit
+#define IR_SENSOR_LEFT 11 // pin du capteur gauche
 #define MOTOR_SPEED 220
 
 //Right motor
-int enableRightMotor=6;
-int rightMotorPin1=7;
-int rightMotorPin2=8;
+int enableRightMotor=6; // contrôle la vitesse du moteur via PWM
+// les pins suivantes contrôles le sens de rotation du moteur, l'une doit toujours être à LOW et l'autre HIGH sauf pour l'arrêt
+int rightMotorPin1=7; // HIGH pour la marche avant, LOW pour marche arrière
+int rightMotorPin2=8; // LOW pour marche avant et HIGH pour marche arrière
 
 //Left motor
-int enableLeftMotor=5;
-int leftMotorPin1=9;
-int leftMotorPin2=10;
+int enableLeftMotor=5; // contrôle la vitesse du moteur via PWM
+// les pins suivantes contrôles le sens de rotation du moteur, l'une doit toujours être à LOW et l'autre HIGH sauf pour l'arrêt
+int leftMotorPin1=9; // HIGH pour la marche avant, LOW pour marche arrière
+int leftMotorPin2=10; // LOW pour marche avant et HIGH pour marche arrière
 
 //flag init (à changer selon le point de départ et si l'on souhaite prendre le virage en T)
-
 bool flagPositionDepart = false; //false à gauche, true à droite
-bool flagPrendreT = true;
+bool flagPrendreT = true; //prend le virage en T si true sinon va tout droit
 
 int compteurVirage = 0;//compteur pour la gestion de virage
 
 void setup()
 {
-  TCCR0B = (TCCR0B & 0xF8) | 0x01;
+  TCCR0B = (TCCR0B & 0xF8) | 0x01; //modifie la fréquence du signal PWM
   
-  // put your setup code here, to run once:
   pinMode(enableRightMotor, OUTPUT);
   pinMode(rightMotorPin1, OUTPUT);
   pinMode(rightMotorPin2, OUTPUT);
@@ -117,44 +117,51 @@ void loop()
       break;
 
     default:
-      rotateMotor(0,0);
-      break;//il est là par principe lui
+      rotateMotor(0,0);//il est là par principe lui mais en théorie, il ne sert à rien
+      break;
   }
 
 }
 
-
+/************************************************************/
+/* Entrée : 2 int repésentant la vitesse des moteurs        */
+/* Sortie : aucun                                           */
+/* Description : vérifie si le sens de marche souhaité selon*/
+/*  le signe du int entré, change les valeurs des pins en   */
+/*  conséquence défini dans le setup puis change la vitesse */
+/*  souhaiter du moteur                                     */
+/************************************************************/
 void rotateMotor(int leftMotorSpeed, int rightMotorSpeed)
 {
   
   
-  if (rightMotorSpeed < 0)
+  if (rightMotorSpeed < 0) // marche arrière moteur droit
   {
     digitalWrite(rightMotorPin1,LOW);
     digitalWrite(rightMotorPin2,HIGH);    
   }
-  else if (rightMotorSpeed > 0)
+  else if (rightMotorSpeed > 0) //marche avant moteur droit
   {
     digitalWrite(rightMotorPin1,HIGH);
     digitalWrite(rightMotorPin2,LOW);      
   }
-  else
+  else //arrêt
   {
     digitalWrite(rightMotorPin1,LOW);
     digitalWrite(rightMotorPin2,LOW);      
   }
 
-  if (leftMotorSpeed < 0)
+  if (leftMotorSpeed < 0) // marche arrière moteur gauche
   {
     digitalWrite(leftMotorPin1,LOW);
     digitalWrite(leftMotorPin2,HIGH);    
   }
-  else if (leftMotorSpeed > 0)
+  else if (leftMotorSpeed > 0) // marche avant moteur droit
   {
     digitalWrite(leftMotorPin1,HIGH);
     digitalWrite(leftMotorPin2,LOW);      
   }
-  else 
+  else //arrêt
   {
     digitalWrite(leftMotorPin1,LOW);
     digitalWrite(leftMotorPin2,LOW);      
