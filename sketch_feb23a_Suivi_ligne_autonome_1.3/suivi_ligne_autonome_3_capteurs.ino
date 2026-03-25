@@ -1,19 +1,19 @@
-#define IR_SENSOR_RIGHT 12 //pin du capteur droit
+#define IR_SENSOR_RIGHT 13 //pin du capteur droit
 #define IR_SENSOR_LEFT 11 // pin du capteur gauche
-#define IR_SENSOR_MIDDLE 13// pin du capteur centrale
+#define IR_SENSOR_MIDDLE 12// pin du capteur centrale
 #define MOTOR_SPEED 220
 
 //Right motor
-int enableRightMotor=6; // contrôle la vitesse du moteur via PWM
+int enableRightMotor=5; // contrôle la vitesse du moteur via PWM
 // les pins suivantes contrôles le sens de rotation du moteur, l'une doit toujours être à LOW et l'autre HIGH sauf pour l'arrêt
-int rightMotorPin1=7; // HIGH pour la marche avant, LOW pour marche arrière
-int rightMotorPin2=8; // LOW pour marche avant et HIGH pour marche arrière
+int rightMotorPin1=9; // HIGH pour la marche avant, LOW pour marche arrière
+int rightMotorPin2=10; // LOW pour marche avant et HIGH pour marche arrière
 
 //Left motor
-int enableLeftMotor=5; // contrôle la vitesse du moteur via PWM
+int enableLeftMotor=6; // contrôle la vitesse du moteur via PWM
 // les pins suivantes contrôles le sens de rotation du moteur, l'une doit toujours être à LOW et l'autre HIGH sauf pour l'arrêt
-int leftMotorPin1=9; // HIGH pour la marche avant, LOW pour marche arrière
-int leftMotorPin2=10; // LOW pour marche avant et HIGH pour marche arrière
+int leftMotorPin1=7; // HIGH pour la marche avant, LOW pour marche arrière
+int leftMotorPin2=8; // LOW pour marche avant et HIGH pour marche arrière
 
 
 ///////////////////////////////////A ADAPTER AU POINT DE DEPART ET AU TRAJET VOULUT/////////////////////////////////////////////////
@@ -136,13 +136,13 @@ void rotateMotor(int leftMotorSpeed, int rightMotorSpeed){
     
   if (rightMotorSpeed < 0) // marche arrière moteur droit
   {
-    digitalWrite(rightMotorPin1,LOW);
-    digitalWrite(rightMotorPin2,HIGH);    
+    digitalWrite(rightMotorPin1,HIGH);
+    digitalWrite(rightMotorPin2,LOW);    
   }
   else if (rightMotorSpeed > 0) //marche avant moteur droit
   {
-    digitalWrite(rightMotorPin1,HIGH);
-    digitalWrite(rightMotorPin2,LOW);      
+    digitalWrite(rightMotorPin1,LOW);
+    digitalWrite(rightMotorPin2,HIGH);      
   }
   else //arrêt
   {
@@ -152,13 +152,13 @@ void rotateMotor(int leftMotorSpeed, int rightMotorSpeed){
 
   if (leftMotorSpeed < 0) // marche arrière moteur gauche
   {
-    digitalWrite(leftMotorPin1,LOW);
-    digitalWrite(leftMotorPin2,HIGH);    
+    digitalWrite(leftMotorPin1,HIGH);
+    digitalWrite(leftMotorPin2,LOW);    
   }
   else if (leftMotorSpeed > 0) // marche avant moteur droit
   {
-    digitalWrite(leftMotorPin1,HIGH);
-    digitalWrite(leftMotorPin2,LOW);      
+    digitalWrite(leftMotorPin1,LOW);
+    digitalWrite(leftMotorPin2,HIGH);      
   }
   else //arrêt
   {
