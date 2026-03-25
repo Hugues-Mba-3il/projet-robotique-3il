@@ -1,0 +1,93 @@
+#define IR_SENSOR_LEFT 11
+#define IR_SENSOR_CENTER 12
+#define IR_SENSOR_RIGHT 13
+#define MOTOR_SPEED 180 // Vitesse légèrement réduite pour plus de précision
+
+// Moteur Droit
+int enableRightMotor = 6;
+int rightMotorPin1 = 7;
+int rightMotorPin2 = 8;
+
+// Moteur Gauche
+int enableLeftMotor = 5;
+int leftMotorPin1 = 9;
+int leftMotorPin2 = 10;
+
+void setup() {
+  // Optimisation PWM (facultatif selon ton shield)
+  TCCR0B = (TCCR0B & 0xF8) | 0x01;
+  
+  pinMode(enableRightMotor, OUTPUT);
+  pinMode(rightMotorPin1, OUTPUT);
+  pinMode(rightMotorPin2, OUTPUT);
+  
+  pinMode(enableLeftMotor, OUTPUT);
+  pinMode(leftMotorPin1, OUTPUT);
+  pinMode(leftMotorPin2, OUTPUT);
+
+  pinMode(IR_SENSOR_RIGHT, INPUT);
+  pinMode(IR_SENSOR_CENTER, INPUT);
+  pinMode(IR_SENSOR_LEFT, INPUT);
+  
+  rotateMotor(0, 0);   
+}
+
+void loop() {
+  // Lecture des 3 capteurs
+  int leftValue = digitalRead(IR_SENSOR_LEFT);
+  int centerValue = digitalRead(IR_SENSOR_CENTER);
+  int rightValue = digitalRead(IR_SENSOR_RIGHT);
+
+  // --- LOGIQUE DE SUIVI DE LIGNE ---
+  // Note : On considère ici que 0 = LIGNE NOIRE détectée
+
+  // Cas 1 : Le centre est sur la ligne -> AVANCER
+  if (leftValue == 1 && centerValue == 0 && rightValue == 1) {
+    rotateMotor(MOTOR_SPEED, MOTOR_SPEED);
+  }
+  // Cas 2 : Le capteur gauche voit la ligne -> TOURNER À GAUCHE
+  else if (leftValue == 0 && centerValue == 1 && rightValue == 1) {
+    rotateMotor(MOTOR_SPEED, -MOTOR_SPEED); 
+  }
+  // Cas 3 : Le capteur droit voit la ligne -> TOURNER À DROITE
+  else if (leftValue == 1 && centerValue == 1 && rightValue == 0) {
+    rotateMotor(-MOTOR_SPEED, MOTOR_SPEED);
+  }
+  // Cas 4 : Tout est blanc ou tout est noir -> STOP
+  else if (leftValue == 1 && centerValue == 1 && rightValue == 1) {
+    rotateMotor(0, 0);
+  }
+  // Optionnel : Si les trois voient du noir (intersection) -> STOP ou AVANCER
+  else if (leftValue == 0 && centerValue == 0 && rightValue == 0) {
+    rotateMotor(0, 0);
+  }
+}
+
+void rotateMotor(int rightMotorSpeed, int leftMotorSpeed) {
+  // Gestion Moteur Droit
+  if (rightMotorSpeed < 0) {
+    digitalWrite(rightMotorPin1, LOW);
+    digitalWrite(rightMotorPin2, HIGH);    
+  } else if (rightMotorSpeed > 0) {
+    digitalWrite(rightMotorPin1, HIGH);
+    digitalWrite(rightMotorPin2, LOW);      
+  } else {
+    digitalWrite(rightMotorPin1, LOW);
+    digitalWrite(rightMotorPin2, LOW);      
+  }
+
+  // Gestion Moteur Gauche
+  if (leftMotorSpeed < 0) {
+    digitalWrite(leftMotorPin1, LOW);
+    digitalWrite(leftMotorPin2, HIGH);    
+  } else if (leftMotorSpeed > 0) {
+    digitalWrite(leftMotorPin1, HIGH);
+    digitalWrite(leftMotorPin2, LOW);      
+  } else {
+    digitalWrite(leftMotorPin1, LOW);
+    digitalWrite(leftMotorPin2, LOW);      
+  }
+
+  analogWrite(enableRightMotor, abs(rightMotorSpeed));
+  analogWrite(enableLeftMotor, abs(leftMotorSpeed));    
+}
